@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "261783690824",
+    "firebase_url": "https://symbolic-path-223920.firebaseio.com",
+    "project_id": "symbolic-path-223920",
+    "storage_bucket": "symbolic-path-223920.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261783690824:android:dabd139e15dff768",
+        "android_client_info": {
+          "package_name": "edu.cuny.qc.cs.finalclass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261783690824-bi1mmve9a44641nfctfl40ejc064f3pq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.cuny.qc.cs.finalclass",
+            "certificate_hash": "711f703477eba58e11e0d069b4348342acb63fdf"
+          }
+        },
+        {
+          "client_id": "261783690824-7pslpsvg5iqdlo8copfu2q0alam9vv6t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVLkQVyh0n39PksXSfmdtYBGLy2FxhnLA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "261783690824-7pslpsvg5iqdlo8copfu2q0alam9vv6t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
