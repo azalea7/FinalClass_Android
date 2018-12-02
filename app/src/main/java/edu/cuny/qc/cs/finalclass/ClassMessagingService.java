@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
 
 import edu.cuny.qc.cs.finalclass.lib.FireBaseUtil;
 
-public class ClassMessagingService extends FirebaseMessagingService implements Executor {
+public class ClassMessagingService extends FirebaseMessagingService {
     private final String TAG = "ClassMessagingService";
 
     @Override
@@ -43,10 +43,5 @@ public class ClassMessagingService extends FirebaseMessagingService implements E
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
-    }
-
-    @Override
-    public void execute(Runnable command) {
-        command.run();
     }
 }
