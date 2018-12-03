@@ -19,7 +19,7 @@ public class Login extends AppCompatActivity {
     protected final String TAG = "Login";
 
     private WebView webView;
-    private final String[] COOKIE_DOMAINS = {"home.cunyfirst.cuny.edu", "hrsa.cunyfirst.cuny.edu", "cunyfirst.cuny.edu", "cuny.edu"};
+    private final String[] COOKIE_DOMAINS = {"https://home.cunyfirst.cuny.edu", "https://hrsa.cunyfirst.cuny.edu", "https://cunyfirst.cuny.edu", "https://ssologin.cuny.edu", "https://cuny.edu"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,6 @@ public class Login extends AppCompatActivity {
         HashMap<String, String> hashMap = new HashMap<>();
 
         for (String domain : COOKIE_DOMAINS) {
-            domain = "https://" + domain;
             String cookies = cookieManager.getCookie(domain);
 
             hashMap.put(domain, cookies);
