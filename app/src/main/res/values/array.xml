@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="SchoolList">
+        <item></item>
+        <item>Queens College</item>
+    </string-array>
+
+    <string-array name="CareerStr">
+        <item></item>
+        <item>Undergraduate</item>
+        <item>graduate</item>
+    </string-array>
+
+    <string-array name="TermInfo">
+        <item></item>
+        <item>2019 Spring Term</item>
+        <item>2019 Summer Term</item>
+    </string-array>
+</resources>

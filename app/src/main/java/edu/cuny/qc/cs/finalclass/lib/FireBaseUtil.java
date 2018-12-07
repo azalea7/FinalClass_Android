@@ -1,19 +1,11 @@
 package edu.cuny.qc.cs.finalclass.lib;
 
-import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-
-import edu.cuny.qc.cs.finalclass.Login;
 
 public class FireBaseUtil {
     private static final String TAG = "FirebaseUtil";
