@@ -1,6 +1,7 @@
 package edu.cuny.qc.cs.finalclass;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.CookieManager;
@@ -41,7 +42,9 @@ public class Login extends AppCompatActivity {
                 } else if (url.equals("https://home.cunyfirst.cuny.edu/psp/cnyepprd/EMPLOYEE/EMPL/h/?tab=DEFAULT")) {
                     storeLogin();
                     uploadUserCookies();
-                    finish();
+                    Intent intent = new Intent(getApplicationContext(), UserInfo.class);
+                    startActivity(intent);
+//                    finish();
                 }
             }
         });
