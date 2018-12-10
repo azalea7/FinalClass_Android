@@ -1,5 +1,6 @@
 package edu.cuny.qc.cs.finalclass;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,26 +9,18 @@ import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 
-import edu.cuny.qc.cs.finalclass.lib.FireBaseUtil;
+import edu.cuny.qc.cs.finalclass.lib.FirebaseUtil;
 import edu.cuny.qc.cs.finalclass.lib.JavascriptInterface;
 
 public class Login extends AppCompatActivity {
     protected final String TAG = "Login";
-
     private WebView webView;
-    private final String[] COOKIE_DOMAINS = {"https://home.cunyfirst.cuny.edu", "https://hrsa.cunyfirst.cuny.edu", "https://cunyfirst.cuny.edu", "https://ssologin.cuny.edu", "https://cuny.edu"};
 
     private String[] userInfo;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,10 +34,10 @@ public class Login extends AppCompatActivity {
                     webView.loadUrl("javascript:var _ZZE = submitCheck; submitCheck = function(){window.Android.sendFormValues(document.querySelector('#CUNYfirstUsernameH').value, document.querySelector('#CUNYfirstPassword').value); return _ZZE();}");
                 } else if (url.equals("https://home.cunyfirst.cuny.edu/psp/cnyepprd/EMPLOYEE/EMPL/h/?tab=DEFAULT")) {
                     storeLogin();
-                    uploadUserCookies();
+                    FirebaseUtil.uploadUserCookies(CookieManager.getInstance());
                     Intent intent = new Intent(getApplicationContext(), UserInfo.class);
+                    finish();
                     startActivity(intent);
-//                    finish();
                 }
             }
         });
@@ -72,47 +65,8 @@ public class Login extends AppCompatActivity {
             outputStream.write('\n');
             outputStream.write(password.getBytes());
             outputStream.close();
-
-
-            File file = new File(getFilesDir(), "user");
-
-            byte[] bytes = new byte[(int) file.length()];
-
-            FileInputStream inputStream = openFileInput("user");
-            inputStream.read(bytes);
-            inputStream.close();
-
-            System.out.println(new String(bytes));
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void uploadUserCookies() {
-        FireBaseUtil.authUser((authUser) -> {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            HashMap<String, String> cookies = extractCookies();
-            HashMap<String, Object> user = new HashMap<>();
-            user.put("cookies", cookies);
-            user.put("cookieCreatedAt", Timestamp.now());
-            user.put("lastCookieRefresh", Timestamp.now());
-
-            db.collection("users").document(authUser.getUid()).set(user, SetOptions.merge());
-        });
-    }
-
-    private HashMap<String, String> extractCookies() {
-        CookieManager cookieManager = CookieManager.getInstance();
-
-        HashMap<String, String> hashMap = new HashMap<>();
-
-        for (String domain : COOKIE_DOMAINS) {
-            String cookies = cookieManager.getCookie(domain);
-
-            hashMap.put(domain, cookies);
-        }
-
-        return hashMap;
     }
 }
