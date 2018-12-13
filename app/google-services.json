@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "261783690824-h3ju2psfhn85t6vidm6fhj5fr7hcjgjb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.cuny.qc.cs.finalclass",
+            "certificate_hash": "ccfc783df2f652d7e0b1d1c8421f3cc909f0a5c0"
+          }
+        },
+        {
           "client_id": "261783690824-7pslpsvg5iqdlo8copfu2q0alam9vv6t.apps.googleusercontent.com",
           "client_type": 3
         }
