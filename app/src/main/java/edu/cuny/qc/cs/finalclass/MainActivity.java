@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,36 +13,33 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+//    private FirebaseAuth mAuth;
+//    private FirebaseAuth.AuthStateListener mAuthListener;
+    private static final String TAG = "MainUtil";
+
     Spinner schoolSpinner;
     Spinner CareerSpinner;
     Spinner TermSpinner;
     EditText emailText;
+    List<String> college;
+    FirebaseFirestore db;
 
-    DatabaseReference userInfo = FirebaseDatabase.getInstance().getReference();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        schoolSpinner = (Spinner) findViewById(R.id.school);
-//        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
-//                R.array.SchoolList, android.R.layout.simple_spinner_item);
-//
-//        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        schoolSpinner.setAdapter(adapter1);
 
         CareerSpinner = (Spinner) findViewById(R.id.career);
 
@@ -62,32 +60,36 @@ public class MainActivity extends AppCompatActivity {
         TermSpinner.setAdapter(adapter3);
 
         emailText = (EditText) findViewById(R.id.emailtext);
+        college = new ArrayList<>();
+        db.collection("colleges").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-        userInfo.child("colleges").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final List<String> college = new ArrayList<String>();
-                for (DataSnapshot collegeSnapshot: dataSnapshot.getChildren() ){
-                    String collegeName = collegeSnapshot.child("name").getValue(String.class);
-                    college.add(collegeName);
-//                    User collegeName = collegeSnapshot.getValue(User.class);
-//                    college.add(collegeName.name);
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()){
+                                college.add(document.getId() + " => " + document.getData());
+                                college.add("hello");
+                                Log.d("college", document.getId() + " => " + document.getData());
+                            }
 
-                }
-                schoolSpinner = (Spinner) findViewById(R.id.school);
-                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(MainActivity.this,
-                        android.R.layout.simple_spinner_item, college);
+                        }else {
+                            college.add("false");
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
-                adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        DocumentReference doc=db.collection("colleges").document("QNS01");
 
-                schoolSpinner.setAdapter(adapter1);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        Task<QuerySnapshot> doc=db.collection("colleges").get();
+//        college.add(doc.getResult().getDocuments().get(0).getId());
+//        college.add(doc.getId());
+        schoolSpinner = (Spinner) findViewById(R.id.school);
+        ArrayAdapter<String> schoolAdapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_spinner_item, college);
+        schoolAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        schoolSpinner.setAdapter(schoolAdapter);
         Button SubmitBtn = (Button) findViewById(R.id.SubmitBtn);
         SubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
