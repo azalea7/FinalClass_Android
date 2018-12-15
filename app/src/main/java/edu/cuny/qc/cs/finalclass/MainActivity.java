@@ -15,7 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import edu.cuny.qc.cs.finalclass.lib.FirebaseUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -142,8 +145,11 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                             selectedCareer = selectedTerm.collection("careerlevel").document(careerValue.split("\\s*-\\s*")[0]);
                                                                                                                             selectedCareer.collection("coursenumber").get().
                                                                                                                                     addOnCompleteListener(task4 -> {
+                                                                                                                                        System.out.println(task4.toString());
+
                                                                                                                                         if(task4.isSuccessful()){
-                                                                                                                                            for(DocumentSnapshot document : task4.getResult()){
+                                                                                                                                            System.out.println(task4.getResult().getDocuments().toString());
+                                                                                                                                            for(DocumentSnapshot document : task4.getResult().getDocuments()){
                                                                                                                                                 nums.add(document.getId());
                                                                                                                                             }
                                                                                                                                         }else{}
@@ -184,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                                                                                                                                         @Override
                                                                                                                                                                         public void onNothingSelected(AdapterView<?> parent) {
-
+                                                                                                                                                                            System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                                                                                                                                                                         }
                                                                                                                                                                     }
                                                                                                                                                             );
@@ -193,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                                                                                                                     @Override
                                                                                                                                                     public void onNothingSelected(AdapterView<?> parent) {
-
+                                                                                                                                                        System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                                                                                                                                                     }
                                                                                                                                                 }
                                                                                                                                         );
@@ -204,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                                                                                         @Override
                                                                                                                         public void onNothingSelected(AdapterView<?> parent) {
-
+                                                                                                                            System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                                                                                                                         }
                                                                                                                     }
                                                                                                             );
@@ -213,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                                                             @Override
                                                                                             public void onNothingSelected(AdapterView<?> parent) {
-
+                                                                                                System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                                                                                             }
                                                                                         }
                                                                                 );
@@ -222,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                                 @Override
                                                                 public void onNothingSelected(AdapterView<?> parent) {
-
+                                                                    System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                                                                 }
                                                             }
                                                     );
@@ -235,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
                     }
                     else{
-                        //TODO: else part;
+                        System.out.println("NOTHING SELECTED!!!!!!!!!!!!!!!!!!!!");
                     }
                 });
 
@@ -256,7 +262,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addUserInfo(){
+        HashMap<String, Object> userinfo = new HashMap<>();
+        userinfo.put("college", schoolValue);
+        userinfo.put("major", majorValue);
+        userinfo.put("term", termValue);
+        userinfo.put("course career", careerValue);
+        userinfo.put("course number", numValue);
+        userinfo.put("section",secValue);
 
+        FirebaseUtil.mergeToFirestoreUser(userinfo);
 
     }
 }
