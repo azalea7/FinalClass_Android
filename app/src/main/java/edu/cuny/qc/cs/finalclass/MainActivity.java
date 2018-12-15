@@ -19,19 +19,31 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainUtil";
-
     Spinner schoolSpinner;
     Spinner subjectSpinner;
     Spinner TermSpinner;
     Spinner CareerSpinner;
+    Spinner coursenumSpinner;
+    Spinner sectionSpinner;
     String schoolValue;
     String majorValue;
+    String termValue;
+    String careerValue;
+    String numValue;
+    String secValue;
     List<String> college = new ArrayList<>();
     List<String> major = new ArrayList<>();
     List<String> term = new ArrayList<>();
+    List<String> careerv = new ArrayList<>();
+    List<String> nums = new ArrayList<>();
+    List<String> sec = new ArrayList<>();
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference selectedSchool;
+    DocumentReference selectedMajor;
+    DocumentReference selectedTerm;
+    DocumentReference selectedCareer;
+    DocumentReference selectedNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                                                     Object maj = parent1.getItemAtPosition(position1);
                                                                     majorValue = maj.toString();
                                                                     term.clear();
-                                                                    DocumentReference selectedMajor = selectedSchool.collection("majors").document(majorValue.split("\\s*-\\s*")[0]);
+                                                                    selectedMajor = selectedSchool.collection("majors").document(majorValue.split("\\s*-\\s*")[0]);
                                                                     selectedMajor.collection("terminfo").get().
                                                                             addOnCompleteListener(task2 -> {
                                                                                 if (task2.isSuccessful()){
@@ -93,29 +105,118 @@ public class MainActivity extends AppCompatActivity {
                                                                                 }else{}
 
                                                                                 TermSpinner = (Spinner) findViewById(R.id.term);
-
                                                                                 ArrayAdapter<String> termAdapter =new ArrayAdapter<String>(MainActivity.this,
                                                                                         android.R.layout.simple_spinner_item, term);
-
                                                                                 termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
                                                                                 TermSpinner.setAdapter(termAdapter);
 
+                                                                                TermSpinner.setOnItemSelectedListener(
+                                                                                        new AdapterView.OnItemSelectedListener() {
+                                                                                            @Override
+                                                                                            public void onItemSelected(AdapterView<?> parent2, View view2, int position2, long id2) {
+                                                                                                Object trm = parent2.getItemAtPosition(position2);
+                                                                                                termValue = trm.toString();
+                                                                                                careerv.clear();
+                                                                                                selectedTerm = selectedMajor.collection("terminfo").document(termValue.split("\\s*-\\s*")[0]);
+                                                                                                selectedTerm.collection("careerlevel").get().
+                                                                                                        addOnCompleteListener(task3 -> {
+                                                                                                           if (task3.isSuccessful()){
+                                                                                                               for(DocumentSnapshot document : task3.getResult()){
+                                                                                                                   careerv.add(document.getId()+" - "+document.getData().get("name"));
+                                                                                                               }
+                                                                                                           }else{}
+
+                                                                                                            CareerSpinner = (Spinner) findViewById(R.id.career);
+                                                                                                            ArrayAdapter<String> careerAdapter = new ArrayAdapter<String>(MainActivity.this,
+                                                                                                                    android.R.layout.simple_spinner_item, careerv);
+                                                                                                            careerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                                                                            CareerSpinner.setAdapter(careerAdapter);
+
+                                                                                                            CareerSpinner.setOnItemSelectedListener(
+                                                                                                                    new AdapterView.OnItemSelectedListener() {
+                                                                                                                        @Override
+                                                                                                                        public void onItemSelected(AdapterView<?> parent3, View view3, int position3, long id3) {
+                                                                                                                            Object car = parent3.getItemAtPosition(position3);
+                                                                                                                            careerValue = car.toString();
+                                                                                                                            nums.clear();
+                                                                                                                            selectedCareer = selectedTerm.collection("careerlevel").document(careerValue.split("\\s*-\\s*")[0]);
+                                                                                                                            selectedCareer.collection("coursenumber").get().
+                                                                                                                                    addOnCompleteListener(task4 -> {
+                                                                                                                                        if(task4.isSuccessful()){
+                                                                                                                                            for(DocumentSnapshot document : task4.getResult()){
+                                                                                                                                                nums.add(document.getId());
+                                                                                                                                            }
+                                                                                                                                        }else{}
+
+                                                                                                                                        coursenumSpinner = (Spinner) findViewById(R.id.courseNumber);
+                                                                                                                                        ArrayAdapter<String> courseNumAdapter =  new ArrayAdapter<String>(MainActivity.this,
+                                                                                                                                                android.R.layout.simple_spinner_item, nums);
+                                                                                                                                        courseNumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                                                                                                        coursenumSpinner.setAdapter(courseNumAdapter);
+
+                                                                                                                                        coursenumSpinner.setOnItemSelectedListener(
+                                                                                                                                                new AdapterView.OnItemSelectedListener() {
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onItemSelected(AdapterView<?> parent4, View view4, int position4, long id4) {
+                                                                                                                                                        Object cn = parent4.getItemAtPosition(position4);
+                                                                                                                                                        numValue = cn.toString();
+                                                                                                                                                        sec.clear();
+                                                                                                                                                        selectedNum = selectedCareer.collection("coursenumber").document(numValue);
+                                                                                                                                                        selectedNum.collection("sections").get().addOnCompleteListener(task5 -> {
+                                                                                                                                                           if(task5.isSuccessful()){
+                                                                                                                                                               for (DocumentSnapshot document : task5.getResult()){
+                                                                                                                                                                   sec.add(document.getId());
+                                                                                                                                                               }
+                                                                                                                                                           }else{}
+
+                                                                                                                                                           sectionSpinner = (Spinner) findViewById(R.id.section);
+                                                                                                                                                            ArrayAdapter<String> sectionAdapter =  new ArrayAdapter<String>(MainActivity.this,
+                                                                                                                                                                    android.R.layout.simple_spinner_item, sec);
+                                                                                                                                                            sectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                                                                                                                            sectionSpinner.setAdapter(sectionAdapter);
+                                                                                                                                                            sectionSpinner.setOnItemSelectedListener(
+                                                                                                                                                                    new AdapterView.OnItemSelectedListener() {
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onItemSelected(AdapterView<?> parent5, View view5, int position5, long id5) {
+                                                                                                                                                                            Object se = parent5.getItemAtPosition(position5);
+                                                                                                                                                                            secValue = se.toString();
+                                                                                                                                                                        }
+
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onNothingSelected(AdapterView<?> parent) {
+
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                            );
+                                                                                                                                                        });
+                                                                                                                                                    }
+
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                                                                                                                                    }
+                                                                                                                                                }
+                                                                                                                                        );
 
 
+                                                                                                                                    });
+                                                                                                                        }
 
+                                                                                                                        @Override
+                                                                                                                        public void onNothingSelected(AdapterView<?> parent) {
 
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                            );
+                                                                                                        });
+                                                                                            }
 
+                                                                                            @Override
+                                                                                            public void onNothingSelected(AdapterView<?> parent) {
 
-
-
-
-
-
-
-
-
-
+                                                                                            }
+                                                                                        }
+                                                                                );
                                                                             });
                                                                 }
 
@@ -138,26 +239,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-          //  System.out.println("0000000000000000000000000000000000000");
-
-
-        CareerSpinner = (Spinner) findViewById(R.id.career);
-
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
-                R.array.CareerStr, android.R.layout.simple_spinner_item);
-
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        CareerSpinner.setAdapter(adapter2);
-
-
-//        DocumentReference doc=db.collection("colleges").document("QNS01");
-
-//        Task<QuerySnapshot> doc=db.collection("colleges").get();
-//        college.add(doc.getResult().getDocuments().get(0).getId());
-//        college.add(doc.getId());
-
         Button SubmitBtn = (Button) findViewById(R.id.SubmitBtn);
         SubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addUserInfo(){
-        String college = schoolSpinner.getSelectedItem().toString();
+
 
     }
 }
