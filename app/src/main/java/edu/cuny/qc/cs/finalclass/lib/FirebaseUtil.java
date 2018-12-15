@@ -3,6 +3,7 @@ package edu.cuny.qc.cs.finalclass.lib;
 import android.util.Log;
 import android.webkit.CookieManager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +45,15 @@ public class FirebaseUtil {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             db.collection("users").document(authUser.getUid()).set(map, SetOptions.merge());
+        });
+    }
+
+
+    public static void getFirestoreUser(OnCompleteListener onCompleteListener) {
+        authUser((authUser) -> {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("users").document(authUser.getUid()).get().addOnCompleteListener(onCompleteListener);
         });
     }
 
