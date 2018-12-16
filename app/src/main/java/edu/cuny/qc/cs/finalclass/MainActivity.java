@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -251,8 +252,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 addUserInfo();
                 passToPriority();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
+
+                File storedLogin = new File(getApplicationContext().getFilesDir(), "user");
+                if (!storedLogin.exists()) {
+                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                    finish();
+                    startActivity(intent);
+                } else {
+                    finish();
+                }
             }
         });
     }

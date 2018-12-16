@@ -34,7 +34,6 @@ public class RefreshWorker extends Worker {
 
     @Override
     public Result doWork() {
-        System.out.println("asdasd");
         boolean success = false;
         try {
             success = refreshCookie();
