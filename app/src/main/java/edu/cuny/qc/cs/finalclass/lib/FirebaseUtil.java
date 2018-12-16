@@ -57,7 +57,7 @@ public class FirebaseUtil {
     }
 
     public static String tokenId(){
-       final String[] ti={};
+       final String[] ti={""};
         authUser((authUser) -> {
             ti[0] = authUser.getUid();
         });
