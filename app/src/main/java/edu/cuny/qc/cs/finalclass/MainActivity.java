@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                                 addOnCompleteListener(task2 -> {
                                     if (task2.isSuccessful()) {
                                         for (DocumentSnapshot document : task2.getResult()) {
+                                            if(document.getId().equals("1189")) continue;
                                             term.add(document.getId() + " - " + document.getData().get("name"));
                                         }
                                     } else {
