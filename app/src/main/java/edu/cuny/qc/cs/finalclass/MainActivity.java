@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addUserInfo(){
-        HashMap<String, Object> user = new HashMap<>();
+//        HashMap<String, Object> user = new HashMap<>();
         HashMap<String, HashMap<String, Object>> courses = new HashMap();
         HashMap<String, Object> userinfo = new HashMap<>();
         userinfo.put("college", schoolValue);
@@ -274,10 +274,11 @@ public class MainActivity extends AppCompatActivity {
         userinfo.put("section", secValue.split("\\s*-\\s*")[0]);
         userinfo.put("instructor", secValue.split("\\s*-\\s*")[1]);
         userinfo.put("time", secValue.split("\\s*-\\s*")[2]+" - "+secValue.split("\\s*-\\s*")[3]);
+        userinfo.put("status", "unregistered");
         courses.put(secValue.split("\\s*-\\s*")[0], userinfo);
-        user.put("selectedCourses", courses);
+//        user.put("selectedCourses", courses);
 
-        FirebaseUtil.mergeToFirestoreUser(user);
+        FirebaseUtil.mergeToUser(courses);
 
     }
 

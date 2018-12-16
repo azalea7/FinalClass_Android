@@ -48,6 +48,14 @@ public class FirebaseUtil {
         });
     }
 
+    public static void mergeToUser(HashMap<String, HashMap<String, Object>> map) {
+        authUser((authUser) -> {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("users").document(authUser.getUid()).set(map, SetOptions.merge());
+        });
+    }
+
     public static void getFirestoreUser(OnCompleteListener onCompleteListener) {
         authUser((authUser) -> {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
