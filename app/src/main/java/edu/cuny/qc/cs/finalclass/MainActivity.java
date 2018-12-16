@@ -9,10 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,10 +147,8 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                             selectedCareer = selectedTerm.collection("careerlevel").document(careerValue.split("\\s*-\\s*")[0]);
                                                                                                                             selectedCareer.collection("coursenumber").get().
                                                                                                                                     addOnCompleteListener(task4 -> {
-                                                                                                                                        System.out.println(task4.toString());
 
                                                                                                                                         if(task4.isSuccessful()){
-                                                                                                                                            System.out.println(task4.getResult().getDocuments().toString());
                                                                                                                                             for(DocumentSnapshot document : task4.getResult().getDocuments()){
                                                                                                                                                 nums.add(document.getId());
                                                                                                                                             }
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                                         selectedNum.collection("sections").get().addOnCompleteListener(task5 -> {
                                                                                                                                                            if(task5.isSuccessful()){
                                                                                                                                                                for (DocumentSnapshot document : task5.getResult()){
-                                                                                                                                                                   sec.add(document.getId());
+                                                                                                                                                                   sec.add(document.getId()+"-"+document.getData().get("instructor")+" - "+document.getData().get("time"));
                                                                                                                                                                }
                                                                                                                                                            }else{}
 
@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addUserInfo();
+                passToPriority();
                 Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
             }
@@ -262,15 +263,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addUserInfo(){
+        HashMap<String, Object> user = new HashMap<>();
+        HashMap<String, HashMap<String, Object>> courses = new HashMap();
         HashMap<String, Object> userinfo = new HashMap<>();
         userinfo.put("college", schoolValue);
         userinfo.put("major", majorValue);
         userinfo.put("term", termValue);
         userinfo.put("course career", careerValue);
         userinfo.put("course number", numValue);
-        userinfo.put("section",secValue);
+        userinfo.put("section", secValue.split("\\s*-\\s*")[0]);
+        userinfo.put("instructor", secValue.split("\\s*-\\s*")[1]);
+        userinfo.put("time", secValue.split("\\s*-\\s*")[2]+" - "+secValue.split("\\s*-\\s*")[3]);
+        courses.put(secValue.split("\\s*-\\s*")[0], userinfo);
+        user.put("selectedCourses", courses);
 
-        FirebaseUtil.mergeToFirestoreUser(userinfo);
+        FirebaseUtil.mergeToFirestoreUser(user);
 
+    }
+
+    private void passToPriority(){
+        HashMap<String, Object> col = new HashMap<>();
+        col.put("name", schoolValue.split("\\s*-\\s*")[1]);
+        String tokenID = FirebaseUtil.tokenId();
+        HashMap<String, Object> token = new HashMap<>();
+        HashMap<String, HashMap<String, Object>> userToken = new HashMap();
+
+        token.put("time",Timestamp.now());
+        token.put("major",majorValue);
+        token.put("course career", careerValue);
+        token.put("course number", numValue);
+        token.put("instructor", secValue.split("\\s*-\\s*")[1]);
+        token.put("time", secValue.split("\\s*-\\s*")[2]+" - "+secValue.split("\\s*-\\s*")[3]);
+        userToken.put(tokenID,token);
+
+        db.collection("priority1").document(schoolValue.split("\\s*-\\s*")[0])
+                .set(col, SetOptions.merge());
+
+        DocumentReference collegeDoc = db.collection("priority1").document(schoolValue.split("\\s*-\\s*")[0]);
+        collegeDoc.collection(termValue.split("\\s*-\\s*")[0]).document(secValue.split("\\s*-\\s*")[0])
+                .set(userToken,SetOptions.merge());
+//        collegeDoc.collection(termValue.split("\\s*-\\s*")[0])
+//                .orderBy("time", ascending: true);
     }
 }

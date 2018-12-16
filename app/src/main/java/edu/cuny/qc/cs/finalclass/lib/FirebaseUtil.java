@@ -48,13 +48,20 @@ public class FirebaseUtil {
         });
     }
 
-
     public static void getFirestoreUser(OnCompleteListener onCompleteListener) {
         authUser((authUser) -> {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             db.collection("users").document(authUser.getUid()).get().addOnCompleteListener(onCompleteListener);
         });
+    }
+
+    public static String tokenId(){
+       final String[] ti={};
+        authUser((authUser) -> {
+            ti[0] = authUser.getUid();
+        });
+        return ti[0];
     }
 
     public static void uploadUserCookies(Object cookieManager) {
