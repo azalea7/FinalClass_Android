@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> token = new HashMap<>();
         HashMap<String, HashMap<String, Object>> userToken = new HashMap();
 
-        token.put("time",Timestamp.now());
+        token.put("selectedtime",Timestamp.now());
         token.put("major",majorValue);
         token.put("course career", careerValue);
         token.put("course number", numValue);
@@ -296,13 +296,21 @@ public class MainActivity extends AppCompatActivity {
         token.put("time", secValue.split("\\s*-\\s*")[2]+" - "+secValue.split("\\s*-\\s*")[3]);
         userToken.put(tokenID,token);
 
+
+        HashMap<String, Object> c = new HashMap<>();
+        c.put("career", careerValue.split("\\s*-\\s*")[1]);
+        HashMap<String, Object> s = new HashMap<>();
+        s.put("time",Timestamp.now());
+
         db.collection("priority1").document(schoolValue.split("\\s*-\\s*")[0])
                 .set(col, SetOptions.merge());
 
         DocumentReference collegeDoc = db.collection("priority1").document(schoolValue.split("\\s*-\\s*")[0]);
-        collegeDoc.collection(termValue.split("\\s*-\\s*")[0]).document(secValue.split("\\s*-\\s*")[0])
-                .set(userToken,SetOptions.merge());
-//        collegeDoc.collection(termValue.split("\\s*-\\s*")[0])
-//                .orderBy("time", ascending: true);
+        collegeDoc.collection(termValue.split("\\s*-\\s*")[0]).document(careerValue.split("\\s*-\\s*")[0])
+                .set(c,SetOptions.merge());
+        DocumentReference termDoc = collegeDoc.collection(termValue.split("\\s*-\\s*")[0]).document(careerValue.split("\\s*-\\s*")[0]);
+        termDoc.collection(secValue.split("\\s*-\\s*")[0]).document(tokenID)
+                .set(s,SetOptions.merge());
+
     }
 }
