@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Button SubmitBtn = (Button) findViewById(R.id.SubmitBtn);
         schoolSpinner = (Spinner) findViewById(R.id.school);
         db.collection("colleges").get()
                 .addOnCompleteListener(task -> {
@@ -79,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         selectedSchool = db.collection("colleges").document(schoolValue.split("\\s*-\\s*")[0]);
                                         major.clear();
+                                        term.clear();
+                                        careerv.clear();
+                                        nums.clear();
+                                        sec.clear();
                                         selectedSchool.collection("majors").get().
                                                 addOnCompleteListener(task1 -> {
                                                     if (task1.isSuccessful()) {
@@ -101,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
                                                                     Object maj = parent1.getItemAtPosition(position1);
                                                                     majorValue = maj.toString();
                                                                     term.clear();
+                                                                    careerv.clear();
+                                                                    nums.clear();
+                                                                    sec.clear();
                                                                     selectedMajor = selectedSchool.collection("majors").document(majorValue.split("\\s*-\\s*")[0]);
                                                                     selectedMajor.collection("terminfo").get().
                                                                             addOnCompleteListener(task2 -> {
@@ -123,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                                                                                                 Object trm = parent2.getItemAtPosition(position2);
                                                                                                 termValue = trm.toString();
                                                                                                 careerv.clear();
+                                                                                                nums.clear();
+                                                                                                sec.clear();
                                                                                                 selectedTerm = selectedMajor.collection("terminfo").document(termValue.split("\\s*-\\s*")[0]);
                                                                                                 selectedTerm.collection("careerlevel").get().
                                                                                                         addOnCompleteListener(task3 -> {
@@ -145,7 +155,9 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                             Object car = parent3.getItemAtPosition(position3);
                                                                                                                             careerValue = car.toString();
                                                                                                                             nums.clear();
-                                                                                                                            selectedCareer = selectedTerm.collection("careerlevel").document(careerValue.split("\\s*-\\s*")[0]);
+                                                                                                                            sec.clear();
+                                                                                                                            selectedCareer = selectedTerm.collection("careerlevel")
+                                                                                                                                    .document(careerValue.split("\\s*-\\s*")[0]);
                                                                                                                             selectedCareer.collection("coursenumber").get().
                                                                                                                                     addOnCompleteListener(task4 -> {
 
@@ -187,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                                                         public void onItemSelected(AdapterView<?> parent5, View view5, int position5, long id5) {
                                                                                                                                                                             Object se = parent5.getItemAtPosition(position5);
                                                                                                                                                                             secValue = se.toString();
+
                                                                                                                                                                         }
 
                                                                                                                                                                         @Override
@@ -246,10 +259,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        Button SubmitBtn = (Button) findViewById(R.id.SubmitBtn);
         SubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(secValue == null) {
+                    Toast.makeText(MainActivity.this, "Please Select all Options!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 addUserInfo();
                 passToPriority();
 
