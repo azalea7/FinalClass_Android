@@ -20,7 +20,7 @@ import okhttp3.HttpUrl;
 public class FirebaseUtil {
     private static final String TAG = "FirebaseUtil";
 
-    private static void authUser(Consumer<FirebaseUser> onComplete) {
+    public static void authUser(Consumer<FirebaseUser> onComplete) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser mUser = mAuth.getCurrentUser();

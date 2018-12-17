@@ -306,17 +306,6 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> col = new HashMap<>();
         col.put("name", schoolValue.split("\\s*-\\s*")[1]);
         String tokenID = FirebaseUtil.tokenId();
-        HashMap<String, Object> token = new HashMap<>();
-        HashMap<String, HashMap<String, Object>> userToken = new HashMap();
-
-        token.put("selectedtime", Timestamp.now());
-        token.put("major", majorValue);
-        token.put("course career", careerValue);
-        token.put("course number", numValue);
-        token.put("instructor", secValue.split("\\s*-\\s*")[1]);
-        token.put("time", secValue.split("\\s*-\\s*")[2] + " - " + secValue.split("\\s*-\\s*")[3]);
-        userToken.put(tokenID, token);
-
 
         HashMap<String, Object> c = new HashMap<>();
         c.put("career", careerValue.split("\\s*-\\s*")[1]);
