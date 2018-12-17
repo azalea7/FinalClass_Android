@@ -43,8 +43,9 @@ public class UserInfo extends AppCompatActivity {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
+                    tv.setText("");
                     user.forEach((k,v)->{
-                            if(k.length()==5){
+                            if(k.length()==5 || k.length()==4){
                                 Map<String,Object> section= (Map<String, Object>) user.get(k);
                                 String row ="Course number: "+section.get("course number")
                                         +"\nSection Number: " + k
