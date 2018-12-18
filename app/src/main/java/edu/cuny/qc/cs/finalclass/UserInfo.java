@@ -49,6 +49,7 @@ public class UserInfo extends AppCompatActivity {
             docRef = db.collection("users").document(authUser.getUid());
             tokenID[0] = authUser.getUid();
             docRef.addSnapshotListener((snapshot, e) -> {
+                if(snapshot==null) return;
                 Map<String,Object> user = snapshot.getData();
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e);
